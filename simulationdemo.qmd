@@ -1,0 +1,398 @@
+---
+title: "Live Demo R Datensimulation"
+author: "André Calero Valdez"
+format: 
+  revealjs:
+    theme: ["theme/q-theme.scss"]
+    code-copy: true
+    center-title-slide: false
+    code-link: true
+    code-overflow: wrap
+    highlight-style: a11y
+    height: 1080
+    width: 1920
+    slide-number: c/t
+
+---
+# Live Demo R Datensimulation
+
+```{r setup}
+#| echo=FALSE
+
+set.seed(42)
+library(limer)
+library(tidyverse)
+library(kableExtra)
+library(cowplot)
+source("rs.R")
+options(digits = 3)
+options("scipen"=100, "digits"=4)
+
+# the script file for correcting the data after downloads
+# our survey tool creates this for us
+read_script_filename <- "survey_222591_R_syntax_file.R"
+
+knitr::opts_chunk$set(
+  cache = FALSE,
+  fig.align = "center",
+  dev = "png",
+  fig.retina = 2,
+  message = FALSE,
+  comment = NA
+)
+```
+
+Wir können Daten in R auch simulieren und aus Verteilungen ziehen.
+Es gibt in R jeweils vier Funktionen pro Verteilung:
+
+* Wert der Dichtefunktion (d)
+* Wert der kumulativen Dichtefunktion (p)
+* Wert der Quantilfunktion (q)
+* Zufallszahlen simulieren (r)
+
+# Wert der Dichtefunktion
+Die Dichtefunktion gibt die Wahrscheinlichkeit an, dass eine Zufallsvariable einen bestimmten Wert annimmt.
+Wert der Dichtefunktion (d)
+```{r}
+#| echo=TRUE
+dnorm(x = 0) # Wert der _d_ensity-Funktion der _norm_alverteilung
+```
+
+
+```{r}
+p1 <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) + 
+  geom_point(data = data.frame(z = 0), aes(x = z, y = dnorm(z)), color = "red", alpha = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = dnorm(0), linetype = "dashed") +
+  ylab("P(X)") +
+  ggtitle("Dichtefunktion der Normalverteilung") +
+  #scale_y_continuous(breaks = NULL) +
+  cowplot::theme_cowplot() +
+  NULL 
+p1
+```
+
+
+# Wert der kumulativen Dichtefunktion
+Die kumulative Dichtefunktion gibt die Wahrscheinlichkeit an, dass eine Zufallsvariable einen Wert kleiner oder gleich einem bestimmten Wert annimmt.
+
+
+Wert der kumulativen Dichtefunktion (p). 
+```{r}
+#| echo=TRUE
+pnorm(0) # Wert der _p_robability-function der _norm_alverteilung
+```
+
+```{r}
+p1 <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = pnorm, n = 101, args = list(mean = 0, sd = 1)) + 
+  geom_point(data = data.frame(z = 0), aes(x = z, y = pnorm(z)), color = "red", alpha = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = pnorm(0), linetype = "dashed") +
+  ylab("P(X < x)") +
+  ggtitle("Kumulative Dichtefunktion der Normalverteilung") +
+  #scale_y_continuous(breaks = NULL) +
+  cowplot::theme_cowplot() +
+  NULL 
+p1
+```
+
+
+
+# Wert der Quantilfunktion
+Die Quantilfunktion gibt den Wert an, bei dem die kumulative Dichtefunktion einen bestimmten Wert annimmt. Also den Wert, bei dem die Wahrscheinlichkeit p erreicht wird.
+
+Wert der Quantilfunktion (q). 
+```{r}
+#| echo=TRUE
+qnorm(p = 0.1587) # Wert der _d_ensity-Funktion der _norm_alverteilung
+```
+
+```{r}
+p1 <- ggplot(data = data.frame(x = c(0, 1)), aes(x)) +
+  stat_function(fun = qnorm, n = 1010, args = list(mean = 0, sd = 1)) + 
+  geom_point(data = data.frame(z = 0.159), aes(x = z, y = qnorm(z)), color = "red", alpha = 1) +
+  geom_vline(xintercept = 0.159, linetype = "dashed") +
+  geom_hline(yintercept = qnorm(0.159), linetype = "dashed") +
+  xlab("P(X < x)") +
+  ylab("x") +
+  ggtitle("Inverse Kumulative Dichtefunktion der Normalverteilung") +
+  #scale_y_continuous(breaks = NULL) +
+  cowplot::theme_cowplot() +
+  NULL 
+p1
+```
+
+
+# Zufallszahlen simulieren
+Mit der Funktion `rnorm` können wir Zufallszahlen aus einer Normalverteilung ziehen.
+
+Zufallszahlen simulieren (r)
+```{r}
+#| echo=TRUE
+z <- rnorm(5) # 10 _r_andom Werte aus der _norm_alverteilung ziehen
+z
+```
+
+```{r}
+p1 <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) + 
+  geom_point(data = data.frame(z), aes(x = z, y = dnorm(z)), color = "red", alpha = 0.5) +
+  ylab("P(X)") +
+  ggtitle("Dichtefunktion der Normalverteilung") +
+  #scale_y_continuous(breaks = NULL) +
+  cowplot::theme_cowplot() +
+  NULL 
+p1
+```
+
+
+
+# Zufallszahlen simulieren
+Mit der Funktion `rnorm` können wir Zufallszahlen aus einer Normalverteilung ziehen.
+
+Zufallszahlen simulieren (r)
+```{r}
+#| echo=TRUE
+z <- rnorm(200) # 10 _r_andom Werte aus der _norm_alverteilung ziehen
+z
+```
+
+# Ergebnis
+
+```{r}
+p1 <- ggplot(data = data.frame(x = c(-3, 3)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1)) + 
+  geom_point(data = data.frame(z), aes(x = z, y = dnorm(z)), color = "red", alpha = 0.3) +
+  ylab("P(X)") +
+  ggtitle("Dichtefunktion der Normalverteilung") +
+  #scale_y_continuous(breaks = NULL) +
+  cowplot::theme_cowplot() +
+  NULL 
+p1
+```
+
+
+# Andere Verteilungen
+
+- `_norm` für Normalverteilung (Körpergröße)
+```{r}
+#| echo=TRUE
+rnorm(n = 5, m = 165, sd = 15) # Normalverteilung
+```
+
+. . . 
+
+- `_unif` für Gleichverteilung (alle Ereignisse gleich wahrscheinlich)
+```{r}
+#| echo=TRUE
+runif(5, min = 1, max = 6) # Gleichverteilung
+```
+
+. . . 
+
+- `_binom` für Binomialverteilung (Wiederholter Münzwurf)
+```{r}
+#| echo=TRUE
+rbinom(5, size = 10, prob = 0.5) # Binomialverteilung
+```
+
+. . . 
+
+- `_pois` für Poissonverteilung (Anzahl von Nachrichten)
+```{r}
+#| echo=TRUE
+rpois(5, lambda = 2) # Poissonverteilung
+```
+
+. . . 
+
+- `_t` für t-Verteilung (Mittelwert von Stichproben)
+```{r}
+#| echo=TRUE
+rt(5, df = 2) # t-Verteilung
+```
+
+
+
+# Anwendung zur Datensimulation
+
+```{r}
+#| echo=TRUE
+sample_size <- 100
+age <- rnorm(sample_size, mean = 30, sd = 10)
+head(age)
+```
+
+. . . 
+
+```{r}
+#| echo=TRUE
+gender <- sample(c("m", "f", "d"), sample_size, replace = TRUE)
+table(gender)
+```
+
+. . . 
+
+```{r}
+#| echo=TRUE
+gender <- sample(c(rep("m",40), rep("f", 60)), sample_size, replace = TRUE)
+table(gender)
+```
+
+. . . 
+
+```{r}
+#| echo=TRUE
+dice <- sample(1:6, sample_size, replace = TRUE)
+head(dice)
+```
+
+. . . 
+
+```{r}
+#| echo=TRUE
+sms_count <- rpois(sample_size, lambda = 7)
+head(sms_count)
+
+```
+# Unser "Fake"-Datensatz
+```{r}
+#| echo=TRUE
+our_data <- tibble(age, gender = factor(gender), dice, sms_count)
+our_data |> head() |>  kable() |> kable_styling()
+```
+
+
+# Deskriptive Statistik auf unseren Fake-Daten
+```{r}
+#| echo=TRUE
+psych::describe(our_data) |> kable() |> kable_styling()
+
+
+```
+# Auswertung und Hypothesentests testen
+```{r}
+#| echo=TRUE
+
+# Mittelwert des Alters
+t.test(our_data$age, mu = 30)
+```
+
+. . . 
+
+```{r}
+#| echo=TRUE
+# Altersunterschieds von Männern und Frauen
+t.test(our_data$age ~ our_data$gender)
+
+```
+
+
+# Test der Verteilung
+Ist unser Alter normalverteilt?
+
+- Shapiro-Wilk-Test
+  - H0: Die Daten sind normalverteilt
+  - W: Teststatistik
+  - p: p-Wert
+```{r}
+#| echo=TRUE
+shapiro.test(our_data$age)
+```
+. . . 
+
+Gegenprobe:
+```{r}
+#| echo=TRUE
+shapiro.test(runif(100, min = 2, max = 4))
+```
+
+
+# Test der Geschlechterverteilung
+- Vorgegebens Verhältnis: 60% Frauen, 40% Männer
+
+*Chi-Quadrat-Test*
+
+  - H0: Die Daten entsprechen dem angegebenen Verhältnis
+  - X-squared: Teststatistik
+  - p: p-Wert
+  - df: Freiheitsgrade (Anzahl der Kategorien - 1)
+
+```{r}
+#| echo=TRUE
+# Beobachtete Werte
+observed <- table(our_data$gender)
+observed
+```
+
+. . .
+
+```{r}
+#| echo=TRUE
+chisq.test(observed, p = c(0.6, 0.4))
+```
+# Anwendung
+Haben wir systematisch mehr Frauen als Männer erhoben?
+Also, ist das Geschlechterverhältnis 50% zu 50%?
+
+
+```{r}
+#| echo=TRUE
+chisq.test(observed, p = c(0.5, 0.5))
+```
+. . . 
+
+In diesem Falle nicht.
+
+# Was ist der Chi-Quadrat-Test?
+- Testet, ob die beobachteten Häufigkeiten von den erwarteten abweichen
+- Verwendet die Chi-Quadrat-Verteilung
+  - Verteilung der Summe von unabhängigen, quadratisch standardisierten Normalverteilungen ~N(0,1)
+  - Bestimmt quasi die quadratische Distanz zwischen beobachteten und erwarteten Werten
+  - Zufallsvariable: X ~ χ²(df)
+  - df: Freiheitsgrade (Anzahl der Kategorien/Werte - 1)
+  - χ² = Σ((O - E)² / E) <- (observed - expected)² / expected
+  
+
+# Die Chi-Quadrat-Verteilung
+
+```{r}
+#| warning=FALSE
+p1 <- ggplot(data = data.frame(x = c(0, 8)), aes(x)) +
+  stat_function(fun = dchisq, n = 1010, args = list(df = 1, ncp = 0), color = "red") +
+  stat_function(fun = dchisq, n = 1010, args = list(df = 2, ncp = 0), color = "orange") + 
+  stat_function(fun = dchisq, n = 1010, args = list(df = 3, ncp = 0), color = "magenta") + 
+  stat_function(fun = dchisq, n = 1010, args = list(df = 4, ncp = 0), color = "darkgreen") + 
+  stat_function(fun = dchisq, n = 1010, args = list(df = 6, ncp = 0), color = "blue") + 
+  geom_label(aes(x = 0.35, y = dchisq(0.35, df = 1), label = "df = 1"), color = "red") +
+  geom_label(aes(x = 0.1, y = dchisq(0.1, df = 2), label = "df = 2"), color = "orange") +
+  geom_label(aes(x = 0.1, y = dchisq(0.1, df = 3), label = "df = 3"), color = "magenta") +
+  geom_label(aes(x = 1.0, y = dchisq(1.0, df = 4), label = "df = 4"), color = "darkgreen") +
+  geom_label(aes(x = 0.5, y = dchisq(0.5, df = 6), label = "df = 6"), color = "blue") +
+  #geom_point(data = data.frame(z), aes(x = z, y = dnorm(z)), color = "red", alpha = 0.3) +
+  ylab("P(X)") +
+  ggtitle("Dichtefunktion der Chi-Quadrat-Verteilungen") +
+  labs(subtitle = "df = Freiheitsgrade") +
+  scale_y_continuous(limits = c(0,0.7)) +
+  scale_x_continuous(limits = c(0,8), breaks = 0:8) +
+  cowplot::theme_cowplot() +
+  NULL 
+p1
+```
+
+# Zusammenhang zwischen Kateogorialen Variablen
+Testet, ob zwei kategoriale Variablen voneinander abhängen
+
+z.B.: Beeinflusst das Geschlecht den Würfelwurf
+
+```{r}
+#| echo=TRUE
+observed <- our_data |> select(gender, dice) |> table() 
+observed
+
+chisq.test(observed)
+```
+
+
